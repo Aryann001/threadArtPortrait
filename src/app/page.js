@@ -1,101 +1,125 @@
-import Image from "next/image";
+"use client";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Image,
+  Form,
+  Input,
+  Button,
+} from "@heroui/react";
+import axios from "axios";
+import { useRef, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [action, setAction] = useState(null);
+  const [reqSent, setReqSent] = useState(false);
+  const [lineSequenceData, setLineSequenceData] = useState(null);
+  const fileInput = useRef(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const tempImgCall = async (formData) => {
+    const { data } = await axios.post("/api/v1/tempImg", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log(data.lineSequence);
+    setLineSequenceData(data.lineSequence);
+  };
+
+  return (
+    <div className="grid items-center justify-items-center min-h-screen">
+      <Card className="py-4 w-[75%] flex items-center justify-center gap-[3rem]">
+        <CardHeader className="pb-0 pt-2 px-4 flex-col">
+          <Form
+            className="w-full flex flex-col gap-[2.5rem]"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setReqSent(true);
+              let data = Object.fromEntries(new FormData(e.currentTarget));
+
+              // console.log(image);
+              data && setReqSent(false);
+              console.log(data);
+              tempImgCall(data);
+              setAction(`submit ${JSON.stringify(data)}`);
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <div className="w-[100%] md:gap-0 gap-[2rem] flex md:flex-row flex-col justify-between">
+              <Input
+                isRequired
+                className=" mr-[1em] border-r-zinc-800 border-r-2"
+                errorMessage="Please enter a number"
+                name="numberOfNails"
+                placeholder="Enter number of nails"
+                type="number"
+              />
+
+              <Input
+                isRequired
+                className=" mr-[1em] border-r-zinc-800 border-r-2"
+                errorMessage="Please enter a number"
+                name="numberOfThreads"
+                placeholder="Enter number of threads"
+                type="number"
+              />
+
+              <Input
+                isRequired
+                className=" mr-[1em] border-r-zinc-800 border-r-2"
+                errorMessage="Please enter a number"
+                name="lineWeight"
+                placeholder="Enter Line Weight"
+                type="number"
+              />
+
+              <Input
+                isRequired
+                errorMessage="Please enter a valid file"
+                name="image"
+                placeholder="Enter a file"
+                type="file"
+                ref={fileInput}
+                accept="image/*"
+              />
+            </div>
+            <div className="flex gap-2 self-center">
+              <Button
+                className=" bg-zinc-500 rounded-xl px-[1rem] py-[0.5rem] hover:bg-zinc-400 text-black"
+                type="submit"
+                isDisabled={reqSent}  
+                disableRipple={reqSent}            >
+                Submit
+              </Button>
+            </div>
+            {lineSequenceData && (
+              <div className="text-small w-[50%] self-center text-wrap text-default-500">
+                <textarea
+                  className="h-75 w-[100%] overflow-y-auto
+                      [&::-webkit-scrollbar]:w-1
+                      [&::-webkit-scrollbar-track]:rounded-full
+                      [&::-webkit-scrollbar-track]:bg-gray-100
+                      [&::-webkit-scrollbar-thumb]:rounded-full
+                      [&::-webkit-scrollbar-thumb]:bg-gray-300
+                      dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+                      dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+                  defaultValue={JSON.stringify(lineSequenceData).replace(
+                    /[\[\]']+/g,
+                    ""
+                  )}
+                  disabled
+                ></textarea>
+              </div>
+            )}
+          </Form>
+        </CardHeader>
+        <CardBody className="overflow-visible w-[100%] flex items-center py-2">
+          {/* <Image
+            alt="Card background"
+            className="object-cover rounded-xl"
+            // src={image}
+            width={270}
+          /> */}
+        </CardBody>
+      </Card>
     </div>
   );
 }
