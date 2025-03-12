@@ -85,7 +85,7 @@ export default function Home() {
                   ref={fileInput}
                   accept="image/*"
                 />
-                <p className="text-wrap text-default-500 text-[0.75rem] text-zinc-300">File size should be less than 5mb</p>
+                <p className="text-wrap text-default-500 text-[0.75rem] text-zinc-300">&#x2022;  File size should be less than 5mb</p>
               </div>
             </div>
             <div className="flex gap-2 self-center">
