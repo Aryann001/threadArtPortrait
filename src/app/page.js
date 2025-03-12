@@ -99,7 +99,7 @@ export default function Home() {
               </Button>
             </div>
             {lineSequenceData && (
-              <div className="text-small w-[50%] self-center text-wrap text-default-500">
+              <div className="text-small md:w-[50%] w-[75%] self-center text-wrap text-default-500">
                 <textarea
                   className="h-75 w-[100%] overflow-y-auto
                       [&::-webkit-scrollbar]:w-1
