@@ -16,7 +16,31 @@ export default function Home() {
   const [reqSent, setReqSent] = useState(false);
   const [loadingDisplay, setLoadingDisplay] = useState("hidden");
   const [lineSequenceData, setLineSequenceData] = useState(null);
+  const [pinCoords, setPinCoords] = useState([]);
   const fileInput = useRef(null);
+
+  const drawStringArt = (lineSequence, pinCoords) => {
+    const canvas = document.getElementById("canvasOutput");
+    const ctx = canvas.getContext("2d");
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw lines
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+
+    for (let i = 1; i < lineSequence.length; i++) {
+      const prevPin = pinCoords[lineSequence[i - 1]];
+      const currPin = pinCoords[lineSequence[i]];
+
+      ctx.beginPath();
+      ctx.lineWidth = 0.25
+      ctx.moveTo(prevPin[0] * 2, prevPin[1] * 2);
+      ctx.lineTo(currPin[0] * 2, currPin[1] * 2);
+      ctx.stroke();
+    }
+  };
 
   const tempImgCall = async (formData) => {
     setReqSent(true);
@@ -28,7 +52,9 @@ export default function Home() {
     data && setReqSent(false);
     setLoadingDisplay("hidden");
     // console.log(data.lineSequence);
-    setLineSequenceData(data.lineSequence);
+    setLineSequenceData(JSON.parse(data.lineSequence));
+    setPinCoords(JSON.parse(data.pinCoords));
+    drawStringArt(JSON.parse(data.lineSequence), JSON.parse(data.pinCoords));
   };
 
   return (
@@ -85,7 +111,9 @@ export default function Home() {
                   ref={fileInput}
                   accept="image/*"
                 />
-                <p className="text-wrap text-default-500 text-[0.75rem] text-zinc-300">&#x2022;  File size should be less than 5mb</p>
+                <p className="text-wrap text-default-500 text-[0.75rem] text-zinc-300">
+                  &#x2022; File size should be less than 5mb
+                </p>
               </div>
             </div>
             <div className="flex gap-2 self-center">
@@ -109,7 +137,10 @@ export default function Home() {
                       [&::-webkit-scrollbar-thumb]:bg-gray-300
                       dark:[&::-webkit-scrollbar-track]:bg-neutral-700
                       dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-                  defaultValue={lineSequenceData.replace(/[\[\]']+/g, "")}
+                  defaultValue={JSON.stringify(lineSequenceData).replace(
+                    /[\[\]']+/g,
+                    ""
+                  )}
                   disabled
                 ></textarea>
               </div>
@@ -117,16 +148,16 @@ export default function Home() {
           </Form>
         </CardHeader>
         <CardBody className="overflow-visible w-[100%] flex items-center py-2">
-          {/* <Image
-            alt="Card background"
-            className="object-cover rounded-xl"
-            // src={image}
-            width={270}
-          /> */}
+          <canvas
+            id="canvasOutput"
+            width={1000}
+            height={1000}
+            className=" bg-white"
+          ></canvas>
         </CardBody>
       </Card>
       <div
-        className={`${loadingDisplay} w-[100%] h-[100%] inset-0 bg-zinc-800 absolute justify-center items-center`}
+        className={`${loadingDisplay} fixed w-[100%] h-[100%] inset-0 bg-zinc-800 justify-center items-center`}
       >
         Loading...
       </div>

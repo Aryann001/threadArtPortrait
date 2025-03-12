@@ -50,13 +50,13 @@ export async function POST(req) {
       imgMatrix.push(row);
     }
 
-    // Generate line sequence
-    const lineSequence = await generateLineSequence(imgMatrix);
-    // console.log(JSON.stringify(lineSequence));
+    // Generate line sequence and pin coordinates
+    const { lineSequence, pinCoords } = await generateLineSequence(imgMatrix);
 
     return NextResponse.json({
       status: "success",
       lineSequence: JSON.stringify(lineSequence),
+      pinCoords: JSON.stringify(pinCoords),
     });
   } catch (e) {
     console.error(e);
@@ -168,7 +168,7 @@ async function generateLineSequence(imgMatrix) {
     pin = bestPin;
   }
 
-  return lineSequence;
+  return { lineSequence, pinCoords };
 }
 
 // Helper functions
