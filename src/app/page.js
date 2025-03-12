@@ -14,31 +14,35 @@ import { useRef, useState } from "react";
 export default function Home() {
   const [action, setAction] = useState(null);
   const [reqSent, setReqSent] = useState(false);
+  const [loadingDisplay, setLoadingDisplay] = useState("hidden");
   const [lineSequenceData, setLineSequenceData] = useState(null);
   const fileInput = useRef(null);
 
   const tempImgCall = async (formData) => {
-    const { data } = await axios.post("/api/v1/tempImg", formData, {
+    setReqSent(true);
+    setLoadingDisplay("flex")
+    const { data } = await axios.post("/api/v1/line-sequence", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log(data.lineSequence);
+
+    data && setReqSent(false);
+    setLoadingDisplay("hidden")
+    // console.log(data.lineSequence);
     setLineSequenceData(data.lineSequence);
   };
 
   return (
-    <div className="grid items-center justify-items-center min-h-screen">
+    <div className="grid relative bg-zinc-800 items-center justify-items-center min-h-screen">
       <Card className="py-4 w-[75%] flex items-center justify-center gap-[3rem]">
         <CardHeader className="pb-0 pt-2 px-4 flex-col">
           <Form
             className="w-full flex flex-col gap-[2.5rem]"
             onSubmit={(e) => {
               e.preventDefault();
-              setReqSent(true);
               let data = Object.fromEntries(new FormData(e.currentTarget));
 
               // console.log(image);
-              data && setReqSent(false);
-              console.log(data);
+              // console.log(data);
               tempImgCall(data);
               setAction(`submit ${JSON.stringify(data)}`);
             }}
@@ -85,8 +89,9 @@ export default function Home() {
               <Button
                 className=" bg-zinc-500 rounded-xl px-[1rem] py-[0.5rem] hover:bg-zinc-400 text-black"
                 type="submit"
-                isDisabled={reqSent}  
-                disableRipple={reqSent}            >
+                isDisabled={reqSent}
+                disableRipple={reqSent}
+              >
                 Submit
               </Button>
             </div>
@@ -101,10 +106,7 @@ export default function Home() {
                       [&::-webkit-scrollbar-thumb]:bg-gray-300
                       dark:[&::-webkit-scrollbar-track]:bg-neutral-700
                       dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-                  defaultValue={JSON.stringify(lineSequenceData).replace(
-                    /[\[\]']+/g,
-                    ""
-                  )}
+                  defaultValue={lineSequenceData.replace(/[\[\]']+/g, "")}
                   disabled
                 ></textarea>
               </div>
@@ -120,6 +122,13 @@ export default function Home() {
           /> */}
         </CardBody>
       </Card>
+      <div
+        className={`${
+          loadingDisplay
+        } w-[100%] h-[100%] inset-0 bg-zinc-800 absolute justify-center items-center`}
+      >
+        Loading...
+      </div>
     </div>
   );
 }

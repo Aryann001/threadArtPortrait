@@ -52,9 +52,12 @@ export async function POST(req) {
 
     // Generate line sequence
     const lineSequence = await generateLineSequence(imgMatrix);
-    console.log(JSON.stringify(lineSequence));
+    // console.log(JSON.stringify(lineSequence));
 
-    return NextResponse.json({ status: "success", lineSequence });
+    return NextResponse.json({
+      status: "success",
+      lineSequence: JSON.stringify(lineSequence),
+    });
   } catch (e) {
     console.error(e);
     return NextResponse.json(
