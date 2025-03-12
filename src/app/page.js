@@ -20,13 +20,13 @@ export default function Home() {
 
   const tempImgCall = async (formData) => {
     setReqSent(true);
-    setLoadingDisplay("flex")
+    setLoadingDisplay("flex");
     const { data } = await axios.post("/api/v1/line-sequence", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
     data && setReqSent(false);
-    setLoadingDisplay("hidden")
+    setLoadingDisplay("hidden");
     // console.log(data.lineSequence);
     setLineSequenceData(data.lineSequence);
   };
@@ -75,15 +75,18 @@ export default function Home() {
                 type="number"
               />
 
-              <Input
-                isRequired
-                errorMessage="Please enter a valid file"
-                name="image"
-                placeholder="Enter a file"
-                type="file"
-                ref={fileInput}
-                accept="image/*"
-              />
+              <div className=" flex flex-col gap-[1rem]">
+                <Input
+                  isRequired
+                  errorMessage="Please enter a valid file"
+                  name="image"
+                  placeholder="Enter a file"
+                  type="file"
+                  ref={fileInput}
+                  accept="image/*"
+                />
+                <p className="text-wrap text-default-500 text-[0.75rem] text-zinc-300">File size should be less than 5mb</p>
+              </div>
             </div>
             <div className="flex gap-2 self-center">
               <Button
@@ -123,9 +126,7 @@ export default function Home() {
         </CardBody>
       </Card>
       <div
-        className={`${
-          loadingDisplay
-        } w-[100%] h-[100%] inset-0 bg-zinc-800 absolute justify-center items-center`}
+        className={`${loadingDisplay} w-[100%] h-[100%] inset-0 bg-zinc-800 absolute justify-center items-center`}
       >
         Loading...
       </div>

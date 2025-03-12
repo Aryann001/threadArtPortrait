@@ -2,14 +2,6 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "100mb", // Adjust based on your needs
-    },
-  },
-};
-
 // Constants
 const IMG_SIZE = 500;
 var MAX_LINES = 4000;
